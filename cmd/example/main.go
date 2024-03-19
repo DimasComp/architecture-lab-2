@@ -2,27 +2,57 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"io"
+	"os"
+	"strings"
 
 	lab2 "github.com/DimasComp/architecture-lab-2"
 )
 
 var (
 	inputExpression = flag.String("e", "", "Expression to compute")
-	// TODO: Add other flags support for input and output configuration.
+	inputFile = flag.String("f", "", "File with expression to compute")
+	outputFile = flag.String("o", "", "File to write results")
+	
+	reader io.Reader
+	writer io.Writer
 )
 
 func main() {
 	flag.Parse()
 
-	// TODO: Change this to accept input from the command line arguments as described in the task and
-	//       output the results using the ComputeHandler instance.
-	//       handler := &lab2.ComputeHandler{
-	//           Input: {construct io.Reader according the command line parameters},
-	//           Output: {construct io.Writer according the command line parameters},
-	//       }
-	//       err := handler.Compute()
+	if (*inputExpression == "") == (*inputFile == "") {
+		panic("Please specify exactly one of -e or -f")
+	}
 
-	res, _ := lab2.PostfixToInfix("+ 2 2")
-	fmt.Println(res)
+	if *inputFile != "" {
+		file, err := os.Open(*inputFile)
+		if err != nil {
+			panic(err)
+		}
+		defer file.Close()
+		reader = file
+	} else {
+		reader = strings.NewReader(*inputExpression)
+	}
+
+	if *outputFile != "" {
+		file, err := os.Create(*outputFile)
+		if err != nil {
+			panic(err)
+		}
+		defer file.Close()
+		writer = file
+	} else {
+		writer = os.Stdout
+	}
+	handler := &lab2.ComputeHandler{
+		Input: reader,
+	    Output: writer,
+	}
+	err := handler.Compute()
+
+	if err != nil {
+		panic(err)
+	}
 }
