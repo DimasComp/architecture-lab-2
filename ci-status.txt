@@ -1,1 +1,1 @@
-this push should fail
+this merge should pass tests
