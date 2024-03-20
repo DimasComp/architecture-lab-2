@@ -13,7 +13,7 @@ import (
 func TestComputeHandler(t *testing.T) {
 
 	t.Run("Write test", func(t *testing.T) {
-        input := "2 3 + 4 $$ 5 * -" //broke that line so test fails
+        input := "2 3 + 4 5 * -"
         expected := "2 + 3 - 4 * 5"
 		buf := bytes.NewBuffer([]byte{})
 
