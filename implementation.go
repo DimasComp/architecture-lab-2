@@ -6,7 +6,7 @@ import (
 )
 
 func isOperator(s string) bool {
-	return s == "+" || s == "-" || s == "*" || s == "/"
+	return s == "+" || s == "-" || s == "*" || s == "/" || s == "^"
 }
 
 func PostfixToInfix(postfix string) (string, error) {
@@ -20,10 +20,13 @@ func PostfixToInfix(postfix string) (string, error) {
 			if len(stack) < 2 {
 				return "", fmt.Errorf("invalid postfix expression")
 			}
-			op2 := stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
-			op1 := stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
+			lastIndex := len(stack) - 1
+
+			op2 := stack[lastIndex]
+			stack = stack[:lastIndex]
+			lastIndex--
+			op1 := stack[lastIndex]
+			stack = stack[:lastIndex]
 
 			infix := fmt.Sprintf("%s %s %s", op1, token, op2)
 			stack = append(stack, infix)
